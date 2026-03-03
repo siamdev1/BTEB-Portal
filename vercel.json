@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/bteb/:path*",
+      "destination": "https://btebresultszone.com/api/:path*"
+    }
+  ]
+}

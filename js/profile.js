@@ -653,12 +653,15 @@ async function fetchAndRenderResults(roll) {
     resultsSection.classList.remove('hidden');
 
     const targetUrl = `https://btebresultszone.com/api/student-results?roll=${roll.trim()}&curriculumId=diploma_in_engineering`;
-    const url = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+    // Using AllOrigins as a reliable proxy
+    const url = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Network error');
-        const json = await response.json();
+
+        const wrapper = await response.json();
+        const json = JSON.parse(wrapper.contents); // AllOrigins wraps the response in 'contents'
 
         if (json.success && json.data && json.data.length > 0) {
             const data = json.data[0];
