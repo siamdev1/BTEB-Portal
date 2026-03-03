@@ -55,12 +55,13 @@ function calculateCompletion(p) {
 
 async function fetchLatestGPA(roll) {
     const targetUrl = `https://btebresultszone.com/api/student-results?roll=${roll.trim()}&curriculumId=diploma_in_engineering`;
-    const url = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+    const url = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
     try {
         const response = await fetch(url);
         if (!response.ok) return;
-        const json = await response.json();
+        const wrapper = await response.json();
+        const json = JSON.parse(wrapper.contents);
 
         if (json.success && json.data && json.data.length > 0) {
             const data = json.data[0];
