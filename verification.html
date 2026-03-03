@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTEB Portal | Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body class="bg-hero min-h-screen flex flex-col items-center justify-center px-6 py-12">
+    <!-- Global Loading Overlay -->
+    <div id="loader" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">BTEB Portal...</div>
+    </div>
+
+    <div class="glass-card w-full max-w-lg p-8 md:p-12 rounded-3xl animate-fade-in text-center">
+        <div class="w-20 h-20 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-indigo-400 text-4xl">verified_user</span>
+        </div>
+
+        <h1 class="text-3xl font-bold font-outfit text-gradient mb-4">OTP Verification</h1>
+        <p class="text-slate-400 mb-8">We've sent a 6-digit verification code to your registered method.</p>
+
+        <!-- Simulated OTP Box -->
+        <div class="glass p-6 rounded-2xl border border-indigo-500/30 mb-8 relative overflow-hidden group">
+            <div class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <p class="text-sm text-indigo-300 font-semibold mb-2">Simulated OTP for Demo</p>
+            <div class="text-4xl font-mono font-bold tracking-[0.5em] text-white" id="displayOTP">123456</div>
+        </div>
+
+        <form id="verificationForm" class="space-y-6">
+            <div class="flex justify-between max-w-xs mx-auto mb-8">
+                <input type="text" maxlength="1" class="otp-input" required autofocus>
+                <input type="text" maxlength="1" class="otp-input" required>
+                <input type="text" maxlength="1" class="otp-input" required>
+                <input type="text" maxlength="1" class="otp-input" required>
+                <input type="text" maxlength="1" class="otp-input" required>
+                <input type="text" maxlength="1" class="otp-input" required>
+            </div>
+
+            <button type="submit"
+                class="btn-premium w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-500/30 flex items-center justify-center space-x-2">
+                <span>Verify & Proceed</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+        </form>
+
+        <p class="mt-8 text-slate-400 text-sm">
+            Didn't receive code?
+            <button class="text-indigo-400 font-bold hover:underline" id="resendBtn">Resend OTP</button>
+        </p>
+    </div>
+
+    <script type="module">
+        import { supabase } from './js/supabaseClient.js';
+        import { toggleLoader } from './js/auth.js';
+
+        const inputs = document.querySelectorAll('.otp-input');
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        const correctOTP = "123456";
+        document.getElementById('displayOTP').textContent = correctOTP;
+
+        document.getElementById('verificationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const enteredOTP = Array.from(inputs).map(i => i.value).join('');
+
+            if (enteredOTP === correctOTP) {
+                const userId = localStorage.getItem('temp_user_id');
+                toggleLoader(true);
+
+                try {
+                    // Update verification status in Supabase
+                    const { error } = await supabase
+                        .from('students')
+                        .update({ is_verified: true })
+                        .eq('id', userId);
+
+                    if (error) throw error;
+
+                    window.location.href = 'login.html';
+                } catch (err) {
+                    alert('Verification error: ' + err.message);
+                } finally {
+                    toggleLoader(false);
+                }
+            } else {
+                alert('Invalid OTP. Please try again.');
+                inputs.forEach(i => i.value = '');
+                inputs[0].focus();
+            }
+        });
+    </script>
+</body>
+
+</html>

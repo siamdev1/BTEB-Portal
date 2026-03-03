@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTEB Portal | Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body class="bg-hero min-h-screen flex flex-col items-center justify-center px-6 py-12 relative">
+    <!-- Back to Home -->
+    <a href="index.html"
+        class="absolute top-8 left-8 flex items-center space-x-2 text-indigo-400 hover:text-indigo-300 transition-colors group">
+        <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+        <span class="font-bold font-outfit">Back to Home Page</span>
+    </a>
+
+    <!-- Global Loading Overlay -->
+    <div id="loader" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">BTEB Portal...</div>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="glass-card w-full max-w-2xl p-8 md:p-12 rounded-3xl animate-fade-in">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-5xl font-bold font-outfit text-gradient mb-2">Create Account</h1>
+            <p class="text-slate-400">Join the BTEB student community portal</p>
+        </div>
+
+        <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Full Name -->
+            <div class="col-span-1 md:col-span-2 space-y-2">
+                <label class="label-premium">Full Name (as per Certificate)</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">person</span>
+                    <input type="text" id="fullName" required placeholder="Ex: MD. Ariful Islam"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Board Roll -->
+            <div class="space-y-2">
+                <label class="label-premium">Polytechnic Board Roll</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">tag</span>
+                    <input type="number" id="boardRoll" required placeholder="6-digit Roll"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Registration Number -->
+            <div class="space-y-2">
+                <label class="label-premium">Registration Number</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">app_registration</span>
+                    <input type="number" id="regNumber" required placeholder="10-digit Reg No"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Session -->
+            <div class="space-y-2">
+                <label class="label-premium">Session</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">calendar_month</span>
+                    <input type="text" id="session" required placeholder="Ex: 2020-21"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Department -->
+            <div class="space-y-2">
+                <label class="label-premium">Technology / Department</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">account_tree</span>
+                    <select id="departmentSelect" required
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none appearance-none">
+                        <option value="" disabled selected class="bg-slate-900">Select Department</option>
+                        <option value="Civil Technology" class="bg-slate-900">Civil Technology</option>
+                        <option value="Electrical Technology" class="bg-slate-900">Electrical Technology</option>
+                        <option value="Mechanical Technology" class="bg-slate-900">Mechanical Technology</option>
+                        <option value="Computer Science and Technology" class="bg-slate-900">Computer Science and
+                            Technology</option>
+                        <option value="Electronics Technology" class="bg-slate-900">Electronics Technology</option>
+                        <option value="Power Technology" class="bg-slate-900">Power Technology</option>
+                        <option value="Refrigeration and Air Conditioning" class="bg-slate-900">Refrigeration and Air
+                            Conditioning</option>
+                        <option value="Other" class="bg-slate-900">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Other Department (Hidden Initially) -->
+            <div id="otherDeptWrapper" class="space-y-2 hidden">
+                <label class="label-premium">Enter Department Name</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">edit_note</span>
+                    <input type="text" id="otherDepartment" placeholder="Your Department"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Semester -->
+            <div class="space-y-2">
+                <label class="label-premium">Current Semester</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">format_list_numbered</span>
+                    <select id="semester" required
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none appearance-none">
+                        <option value="" disabled selected class="bg-slate-900">Select Semester</option>
+                        <option value="1st Semester" class="bg-slate-900">1st Semester</option>
+                        <option value="2nd Semester" class="bg-slate-900">2nd Semester</option>
+                        <option value="3rd Semester" class="bg-slate-900">3rd Semester</option>
+                        <option value="4th Semester" class="bg-slate-900">4th Semester</option>
+                        <option value="5th Semester" class="bg-slate-900">5th Semester</option>
+                        <option value="6th Semester" class="bg-slate-900">6th Semester</option>
+                        <option value="7th Semester" class="bg-slate-900">7th Semester</option>
+                        <option value="8th Semester" class="bg-slate-900">8th Semester</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="space-y-2">
+                <label class="label-premium">Mobile Number</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">phone_iphone</span>
+                    <input type="tel" id="mobile" required placeholder="01XXXXXXXXX"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="col-span-1 md:col-span-2 space-y-2">
+                <label class="label-premium">Email Address</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">mail</span>
+                    <input type="email" id="email" required placeholder="name@example.com"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="col-span-1 md:col-span-2 space-y-2">
+                <label class="label-premium">Password</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">lock</span>
+                    <input type="password" id="password" required placeholder="Min 8 characters"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all outline-none">
+                </div>
+            </div>
+
+            <div class="col-span-1 md:col-span-2 mt-4">
+                <button type="submit"
+                    class="btn-premium w-full py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-500/30 flex items-center justify-center space-x-2">
+                    <span>Create Account</span>
+                    <span class="material-symbols-outlined">how_to_reg</span>
+                </button>
+            </div>
+        </form>
+
+        <p class="mt-8 text-center text-slate-400">
+            Already have an account?
+            <a href="login.html" class="text-indigo-400 font-bold hover:underline">Sign In</a>
+        </p>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
+        <div class="absolute top-1/4 -left-20 w-80 h-80 bg-indigo-500/10 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-purple-500/10 blur-[120px] rounded-full"></div>
+    </div>
+
+    <script type="module" src="js/register.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTEB Portal | PDF Books</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body class="bg-hero min-h-screen opacity-0 transition-opacity duration-500">
+    <!-- Global Loading Overlay -->
+    <div id="loader" class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">BTEB Portal...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <a href="dashboard.html" class="flex items-center space-x-2 text-indigo-400">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="font-bold">Back to Dashboard</span>
+        </a>
+    </nav>
+
+    <main class="p-6 md:p-12 max-w-7xl mx-auto">
+
+        <!-- Header -->
+        <div class="mb-12 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold font-outfit text-gradient mb-4 text-center">Digital Library</h1>
+            <p class="text-slate-400 text-center max-w-2xl mx-auto">Access and download scanned PDF books for all
+                Polytechnic departments and semesters.</p>
+        </div>
+
+        <!-- Department Selection -->
+        <div id="deptSection" class="animate-fade-in">
+            <h3 class="text-2xl font-bold font-outfit mb-8 ml-2">Select Your Technology</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="deptGrid">
+                <!-- Departments will be injected here -->
+            </div>
+        </div>
+
+        <!-- Semester Selection (Hidden Initially) -->
+        <div id="semSection" class="hidden animate-fade-in">
+            <button id="backToDept" class="flex items-center space-x-2 text-indigo-400 font-bold mb-8 hover:underline">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Back to Technologies</span>
+            </button>
+            <h3 class="text-2xl font-bold font-outfit mb-8 ml-2" id="selectedDeptName">Computer Science & Technology
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="semGrid">
+                <!-- Semesters will be injected here -->
+            </div>
+        </div>
+
+        <!-- Book List (Hidden Initially) -->
+        <div id="bookSection" class="hidden animate-fade-in">
+            <button id="backToSem" class="flex items-center space-x-2 text-indigo-400 font-bold mb-8 hover:underline">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Back to Semesters</span>
+            </button>
+            <h3 class="text-2xl font-bold font-outfit mb-8 ml-2"><span id="activeSemTitle">4th Semester</span> Books
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="bookGrid">
+                <!-- Books will be injected here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- PDF Viewer Modal -->
+    <div id="pdfModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 md:p-12">
+        <div class="absolute inset-0 bg-dark-bg/80 backdrop-blur-xl" onclick="closePdf()"></div>
+        <div
+            class="glass-card w-full h-full max-w-6xl rounded-3xl relative z-10 overflow-hidden flex flex-col border border-white/10">
+            <div class="p-4 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <h4 class="font-bold flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-indigo-400">picture_as_pdf</span>
+                    <span id="pdfTitle">Book Title</span>
+                </h4>
+                <button onclick="closePdf()"
+                    class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="flex-grow bg-slate-900 flex items-center justify-center">
+                <!-- This would be an iframe or a PDF lib. For demo we show a placeholder. -->
+                <div class="text-center">
+                    <span class="material-symbols-outlined text-indigo-400/20 text-9xl">picture_as_pdf</span>
+                    <p class="text-slate-500 mt-4">Embedded PDF Viewer Preview</p>
+                    <p class="text-xs text-slate-600">(supabase/storage/pdf-link.pdf)</p>
+                </div>
+            </div>
+            <div class="p-4 bg-white/5 flex justify-end space-x-4">
+                <button
+                    class="px-6 py-2 rounded-xl glass border border-white/10 hover:border-indigo-400/30 transition-all font-bold">Download
+                    PDF</button>
+                <button onclick="closePdf()" class="px-6 py-2 rounded-xl btn-premium font-bold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { checkSession } from './js/auth.js';
+
+        // Protected Route
+        async function init() {
+            try {
+                await checkSession();
+                document.body.classList.remove('opacity-0');
+            } catch (err) {
+                console.error("Auth failed:", err);
+            }
+        }
+        init();
+
+        const departments = [
+            { name: "Civil Technology", icon: "engineering" },
+            { name: "Electrical Technology", icon: "bolt" },
+            { name: "Mechanical Technology", icon: "settings" },
+            { name: "Computer Science", icon: "terminal" },
+            { name: "Electronics Technology", icon: "memory" },
+            { name: "Power Technology", icon: "power" },
+            { name: "Automobile Engineering", icon: "directions_car" },
+            { name: "Marine Engineering", icon: "sailing" }
+        ];
+
+        const semesters = ["1st Semester", "2nd Semester", "3rd Semester", "4th Semester", "5th Semester", "6th Semester", "7th Semester", "8th Semester"];
+
+        const books = [
+            { title: "Data Structure & Algorithm", code: "66641" },
+            { title: "Object Oriented Programming", code: "66642" },
+            { title: "Digital Electronics", code: "66643" },
+            { title: "Web Development", code: "66644" }
+        ];
+
+        const deptSection = document.getElementById('deptSection');
+        const semSection = document.getElementById('semSection');
+        const bookSection = document.getElementById('bookSection');
+        const deptGrid = document.getElementById('deptGrid');
+        const semGrid = document.getElementById('semGrid');
+        const bookGrid = document.getElementById('bookGrid');
+
+        // Init Depts
+        departments.forEach(dept => {
+            const card = document.createElement('div');
+            card.className = "glass-card p-8 rounded-3xl border border-white/5 hover:border-indigo-500/30 group cursor-pointer text-center";
+            card.innerHTML = `
+                <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform mx-auto">
+                    <span class="material-symbols-outlined text-indigo-400 text-3xl font-variation-fill-1">${dept.icon}</span>
+                </div>
+                <h4 class="text-xl font-bold mb-2">${dept.name}</h4>
+                <p class="text-sm text-slate-500">120+ Books available</p>
+            `;
+            card.onclick = () => showSemesters(dept.name);
+            deptGrid.appendChild(card);
+        });
+
+        function showSemesters(deptName) {
+            deptSection.classList.add('hidden');
+            semSection.classList.remove('hidden');
+            document.getElementById('selectedDeptName').textContent = deptName;
+
+            semGrid.innerHTML = '';
+            semesters.forEach(sem => {
+                const card = document.createElement('div');
+                card.className = "glass p-6 rounded-2xl border border-white/5 hover:bg-white/5 hover:border-purple-500/30 transition-all cursor-pointer text-center";
+                card.innerHTML = `<h4 class="font-bold">${sem}</h4>`;
+                card.onclick = () => showBooks(sem);
+                semGrid.appendChild(card);
+            });
+        }
+
+        function showBooks(semName) {
+            semSection.classList.add('hidden');
+            bookSection.classList.remove('hidden');
+            document.getElementById('activeSemTitle').textContent = semName;
+
+            bookGrid.innerHTML = '';
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-6 rounded-3xl border border-white/5 hover:border-cyan-500/30 group";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-cyan-400">auto_stories</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500">Code: ${book.code}</span>
+                    </div>
+                    <h4 class="font-bold mb-4 line-clamp-2">${book.title}</h4>
+                    <button class="w-full py-2 rounded-xl bg-white/5 hover:bg-indigo-500/20 text-sm font-bold transition-colors">View PDF</button>
+                `;
+                card.querySelector('button').onclick = () => openPdf(book.title);
+                bookGrid.appendChild(card);
+            });
+        }
+
+        window.openPdf = (title) => {
+            document.getElementById('pdfTitle').textContent = title;
+            document.getElementById('pdfModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closePdf = () => {
+            document.getElementById('pdfModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('backToDept').onclick = () => {
+            semSection.classList.add('hidden');
+            deptSection.classList.remove('hidden');
+        };
+
+        document.getElementById('backToSem').onclick = () => {
+            bookSection.classList.add('hidden');
+            semSection.classList.remove('hidden');
+        };
+
+    </script>
+</body>
+
+</html>
